@@ -1,0 +1,25 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>Articles to Review</h1>
+    <p class="small">Articles from the publishers you work for.</p>
+    {% for article in articles %}
+        <div class="card">
+            <h3><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h3>
+            <p class="small">
+                By {{ article.author.username }} |
+                {{ article.publisher.name|default:"Independent" }} |
+                {{ article.created_at|date:"d M Y" }}
+            </p>
+            <p>{{ article.content|truncatewords:40 }}</p>
+            <form method="post" action="{% url 'approve_article' article.id %}" style="display:inline">
+                {% csrf_token %}
+                <button type="submit">Approve</button>
+            </form>
+            <a href="{% url 'edit_article' article.id %}">Edit</a> |
+            <a href="{% url 'delete_article' article.id %}">Delete</a>
+        </div>
+    {% empty %}
+        <p>Nothing to review right now.</p>
+    {% endfor %}
+{% endblock %}

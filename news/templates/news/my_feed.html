@@ -1,0 +1,15 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>My Feed</h1>
+    <p class="small">Articles from the publishers and journalists you subscribed to.</p>
+    <p class="small">
+        Publishers: {% for publisher in user.subscribed_publishers.all %}<a href="{% url 'publisher_detail' publisher.id %}">{{ publisher.name }}</a>{% if not forloop.last %}, {% endif %}{% empty %}none{% endfor %}<br>
+        Journalists: {% for journalist in user.subscribed_journalists.all %}<a href="{% url 'journalist_detail' journalist.id %}">{{ journalist.username }}</a>{% if not forloop.last %}, {% endif %}{% empty %}none{% endfor %}
+    </p>
+    {% for article in articles %}
+        {% include 'news/_article_card.html' %}
+    {% empty %}
+        <p>Nothing here yet. Subscribe to a <a href="{% url 'publisher_list' %}">publisher</a> or a journalist.</p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>{{ publisher.name }}</h1>
+    <p>{{ publisher.description }}</p>
+    <p class="small">
+        Editors: {% for editor in publisher.editors.all %}{{ editor.username }}{% if not forloop.last %}, {% endif %}{% empty %}none{% endfor %}<br>
+        Journalists: {% for journalist in publisher.journalists.all %}<a href="{% url 'journalist_detail' journalist.id %}">{{ journalist.username }}</a>{% if not forloop.last %}, {% endif %}{% empty %}none{% endfor %}
+    </p>
+
+    {% url 'toggle_publisher' publisher.id as action %}
+    {% include 'news/_subscribe_button.html' with action=action %}
+
+    <h2>Articles</h2>
+    {% for article in articles %}
+        {% include 'news/_article_card.html' %}
+    {% empty %}
+        <p>No articles yet.</p>
+    {% endfor %}
+{% endblock %}

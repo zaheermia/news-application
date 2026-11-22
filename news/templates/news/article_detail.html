@@ -1,0 +1,45 @@
+{% extends 'news/base.html' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ article.title }}</h1>
+    <p class="small">
+        By <a href="{% url 'journalist_detail' article.author.id %}">{{ article.author.username }}</a>
+        |
+        {% if not article.publisher %}
+            Independent
+        {% elif not user.is_authenticated or user.role == 'reader' %}
+            <a href="{% url 'publisher_detail' article.publisher.id %}">{{ article.publisher.name }}</a>
+        {% else %}
+            {{ article.publisher.name }}
+        {% endif %}
+        | {{ article.created_at|date:"d M Y H:i" }}
+    </p>
+    {% if not article.approved %}
+        {% if article.publisher %}
+            <p class="pending">This article is waiting for an editor to approve it.</p>
+        {% else %}
+            <p class="pending">This independent article is not published yet.</p>
+        {% endif %}
+    {% endif %}
+
+    <div class="card">{{ article.content|linebreaks }}</div>
+
+    {% if can_approve %}
+        <form method="post" action="{% url 'approve_article' article.id %}" style="display:inline">
+            {% csrf_token %}
+            <button type="submit">Approve</button>
+        </form>
+    {% endif %}
+    {% if can_publish %}
+        <form method="post" action="{% url 'publish_article' article.id %}" style="display:inline">
+            {% csrf_token %}
+            <button type="submit">Publish</button>
+        </form>
+    {% endif %}
+    {% if can_change %}
+        <a href="{% url 'edit_article' article.id %}">Edit</a> |
+        <a href="{% url 'delete_article' article.id %}">Delete</a>
+    {% endif %}
+{% endblock %}

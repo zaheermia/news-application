@@ -1,0 +1,12 @@
+{% if user.role == 'reader' %}
+    <form method="post" action="{{ action }}">
+        {% csrf_token %}
+        {% if subscribed %}
+            <button type="submit">Unsubscribe</button>
+        {% else %}
+            <button type="submit">Subscribe</button>
+        {% endif %}
+    </form>
+{% elif not user.is_authenticated %}
+    <p class="small"><a href="{% url 'login' %}">Log in</a> as a reader to subscribe.</p>
+{% endif %}

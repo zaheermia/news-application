@@ -1,0 +1,23 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>{{ journalist.username }}</h1>
+    <p class="small">Journalist</p>
+
+    {% url 'toggle_journalist' journalist.id as action %}
+    {% include 'news/_subscribe_button.html' with action=action %}
+
+    <h2>Articles</h2>
+    {% for article in articles %}
+        {% include 'news/_article_card.html' %}
+    {% empty %}
+        <p>No articles yet.</p>
+    {% endfor %}
+
+    <h2>Newsletters</h2>
+    {% for newsletter in journalist.newsletters.all %}
+        <p><a href="{% url 'newsletter_detail' newsletter.id %}">{{ newsletter.title }}</a></p>
+    {% empty %}
+        <p>No newsletters yet.</p>
+    {% endfor %}
+{% endblock %}

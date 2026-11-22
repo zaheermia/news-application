@@ -1,0 +1,17 @@
+<div class="card">
+    <h3><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h3>
+    <p class="small">
+        By <a href="{% url 'journalist_detail' article.author.id %}">{{ article.author.username }}</a>
+        |
+        {% if not article.publisher %}
+            Independent
+        {% elif not user.is_authenticated or user.role == 'reader' %}
+            <a href="{% url 'publisher_detail' article.publisher.id %}">{{ article.publisher.name }}</a>
+        {% else %}
+            {{ article.publisher.name }}
+        {% endif %}
+        | {{ article.created_at|date:"d M Y" }}
+        {% if not article.approved %}| <span class="pending">{% if article.publisher %}Waiting for approval{% else %}Not published yet{% endif %}</span>{% endif %}
+    </p>
+    <p>{{ article.content|truncatewords:30 }}</p>
+</div>

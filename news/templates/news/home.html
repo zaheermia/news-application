@@ -1,0 +1,10 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>Latest News</h1>
+    {% for article in articles %}
+        {% include 'news/_article_card.html' %}
+    {% empty %}
+        <p>No articles yet.</p>
+    {% endfor %}
+{% endblock %}

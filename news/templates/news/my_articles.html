@@ -1,0 +1,22 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>My Articles</h1>
+    <p><a href="{% url 'add_article' %}">Write a new article</a></p>
+    <p class="small">
+        Articles for a publisher wait for its editor.
+        Independent articles have no editor, so you publish them yourself.
+    </p>
+    {% for article in articles %}
+        {% include 'news/_article_card.html' %}
+        {% if not article.approved and not article.publisher %}
+            <form method="post" action="{% url 'publish_article' article.id %}">
+                {% csrf_token %}
+                <button type="submit">Publish</button>
+                <a href="{% url 'edit_article' article.id %}">Edit</a>
+            </form>
+        {% endif %}
+    {% empty %}
+        <p>You haven't written any articles yet.</p>
+    {% endfor %}
+{% endblock %}

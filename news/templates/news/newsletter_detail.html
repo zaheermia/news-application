@@ -1,0 +1,21 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>{{ newsletter.title }}</h1>
+    <p class="small">By {{ newsletter.author.username }} | {{ newsletter.publisher.name|default:"Independent" }} | {{ newsletter.created_at|date:"d M Y" }}</p>
+    <p>{{ newsletter.description|linebreaks }}</p>
+
+    {% if can_change %}
+        <p>
+            <a href="{% url 'edit_newsletter' newsletter.id %}">Edit</a> |
+            <a href="{% url 'delete_newsletter' newsletter.id %}">Delete</a>
+        </p>
+    {% endif %}
+
+    <h2>Articles</h2>
+    {% for article in articles %}
+        {% include 'news/_article_card.html' %}
+    {% empty %}
+        <p>This newsletter has no articles yet.</p>
+    {% endfor %}
+{% endblock %}

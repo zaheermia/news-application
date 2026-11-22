@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}News App{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
+        nav { background: #1d3557; padding: 12px 20px; }
+        nav a { color: white; margin-right: 12px; text-decoration: none; }
+        nav span { color: #ccc; margin-right: 12px; }
+        main { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+        .card { background: white; border: 1px solid #ddd; padding: 12px 16px;
+                margin-bottom: 12px; border-radius: 4px; }
+        .small { color: #666; font-size: 0.9em; }
+        .error { color: #b00020; }
+        .message { color: green; }
+        .pending { color: #b36b00; font-weight: bold; }
+        button { padding: 6px 12px; cursor: pointer; }
+        .danger { background: #b00020; color: white; border: none; }
+        textarea, input[type=text], input[type=email], input[type=password],
+        select { width: 100%; max-width: 600px; padding: 6px; }
+        ul.errorlist { color: #b00020; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+
+        {% if not user.is_authenticated %}
+            <a href="{% url 'publisher_list' %}">Publishers</a>
+            <a href="{% url 'newsletter_list' %}">Newsletters</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% else %}
+            {% if user.role == 'reader' %}
+                <a href="{% url 'publisher_list' %}">Publishers</a>
+                <a href="{% url 'newsletter_list' %}">Newsletters</a>
+                <a href="{% url 'my_feed' %}">My Feed</a>
+            {% elif user.role == 'journalist' %}
+                <a href="{% url 'my_articles' %}">My Articles</a>
+                <a href="{% url 'add_article' %}">Write Article</a>
+                <a href="{% url 'my_newsletters' %}">My Newsletters</a>
+                <a href="{% url 'add_newsletter' %}">New Newsletter</a>
+            {% elif user.role == 'editor' %}
+                <a href="{% url 'review_articles' %}">Review Articles</a>
+                <a href="{% url 'publisher_list' %}">My Publishers</a>
+                <a href="{% url 'newsletter_list' %}">Newsletters</a>
+            {% elif user.role == 'publisher' %}
+                <a href="{% url 'my_publication' %}">My Publication</a>
+                <a href="{% url 'newsletter_list' %}">Newsletters</a>
+            {% endif %}
+            <span>Logged in as {{ user.username }} ({{ user.get_role_display }})</span>
+            <a href="{% url 'logout' %}">Logout</a>
+        {% endif %}
+    </nav>
+
+    <main>
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>Login</h1>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <p>Username: <input type="text" name="username" value="{{ username|default:'' }}" required></p>
+        <p>Password: <input type="password" name="password" required></p>
+        <button type="submit">Login</button>
+    </form>
+
+    <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+{% endblock %}

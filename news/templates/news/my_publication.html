@@ -1,0 +1,56 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>{{ publisher.name }}</h1>
+
+    <h2>Your staff</h2>
+    <p class="small">
+        Editors and journalists register on the Register page first.
+        Then add them here with their username.
+    </p>
+
+    <div class="card">
+        <h3>Editors</h3>
+        {% for editor in publisher.editors.all %}
+            <form method="post" action="{% url 'remove_staff' editor.id %}">
+                {% csrf_token %}
+                {{ editor.username }}
+                <button type="submit">Remove</button>
+            </form>
+        {% empty %}
+            <p>No editors yet.</p>
+        {% endfor %}
+
+        <h3>Journalists</h3>
+        {% for journalist in publisher.journalists.all %}
+            <form method="post" action="{% url 'remove_staff' journalist.id %}">
+                {% csrf_token %}
+                {{ journalist.username }}
+                <button type="submit">Remove</button>
+            </form>
+        {% empty %}
+            <p>No journalists yet.</p>
+        {% endfor %}
+    </div>
+
+    <h3>Add an editor or journalist</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ staff_form.as_p }}
+        <button type="submit" name="add_staff">Add</button>
+    </form>
+
+    <h2>Publication details</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ details_form.as_p }}
+        <button type="submit" name="save_details">Save</button>
+    </form>
+
+    <h2>Published articles</h2>
+    {% for article in articles %}
+        {% include 'news/_article_card.html' %}
+    {% empty %}
+        <p>No articles yet.</p>
+    {% endfor %}
+{% endblock %}
